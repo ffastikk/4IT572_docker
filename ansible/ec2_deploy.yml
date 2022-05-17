@@ -9,7 +9,7 @@
         image: ami-04902260ca3d33422
         region: us-east-1
         key_name: vockey
-        vpc_subnet_id: subnet-0b7acbb4478ea9575
+        vpc_subnet_id: subnet-02923e957525db3ba
         assign_public_ip: yes
         count: 1
         group: eshop
