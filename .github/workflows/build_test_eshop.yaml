@@ -107,7 +107,7 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v2.4.0
         with:
-          token: ${{ secrets.WORK_FLOW_TOKEN_UPDATE }}
+          token: ${{ secrets.WORKFLOW_TOKEN}}
       - name: Install python
         uses: actions/setup-python@v2
         with:
