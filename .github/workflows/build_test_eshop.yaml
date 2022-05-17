@@ -79,4 +79,35 @@ jobs:
       - name: Run Tests
         run: |
           npm run test -- --colors          
+  DeployToAws:
+    needs: [ Build, Test ]
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
 
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          token: ${{ secrets.WORK_FLOW_TOKEN_UPDATE }}
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.7'
+      - name: Install boto/ansiblePlaybook
+        run: pip3 install ansible==4 boto boto3
+      - name: Prepare SSHKEY
+        run: |
+          touch ./ansible/devops.pem
+          echo '${{ secrets.AWS_SSH_KEY }}' >> ./ansible/devops.pem
+          chmod 400 ./ansible/devops.pem
+      - name: Prepare ansible variables groups
+        run: |
+            printf 'access_key: ${{ secrets.AWS_ACCESS_KEY }}\n' >> ./ansible/group_vars/all/aws.yml
+            printf 'secret_key: ${{ secrets.AWS_SECRET }}\n' >> ./ansible/group_vars/all/aws.yml
+            printf 'session_token: ${{ secrets.AWS_SESSION }}\n' >> ./ansible/group_vars/all/aws.yml
+            cat ./ansible/group_vars/all/aws.yml
+      - name: Deploy to AWS
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+        run: |
+          ansible-playbook ./ansible/ec2_deploy.yml --user ec2-user --key-file ./ansible/devops.pem
