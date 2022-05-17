@@ -3,6 +3,10 @@
   connection: local
 
   tasks:
+    - name: Add Centos Extras
+      shell: yum-config-manager --enable extras
+      become: yes
+      
     - name: Launch EC2 instance
       amazon.aws.ec2:
         instance_type: t2.micro
