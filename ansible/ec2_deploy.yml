@@ -2,6 +2,7 @@
   hosts: localhost
   connection: local
 
+  tasks:
     - name: Launch EC2 instance
       amazon.aws.ec2:
         instance_type: t2.micro
@@ -39,7 +40,7 @@
     - name: Add Centos Extras
       shell: yum-config-manager --enable extras
       become: yes
-      
+
     - name: Install Docker and Git
       yum:
         name:

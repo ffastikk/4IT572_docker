@@ -105,9 +105,17 @@ jobs:
 
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_TOKEN}}
+      - name: Load node modules and build folder
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            ./node_modules
+            ./build
+          key: ${{ runner.os }}-build-${{ github.run_id }}
       - name: Install python
         uses: actions/setup-python@v2
         with:
